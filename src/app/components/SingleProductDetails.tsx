@@ -16,7 +16,7 @@ type Product = {
   price: string;
   oldPrice: string;
   discount: string;
-  category: string;
+  category1: string;
   brand: string;
   features: string[];
   ShortDescription: string[];
@@ -105,7 +105,7 @@ const SingleProductDetails = ({
         <h1 className="text-3xl font-bold text-black mb-4">{product.title}</h1>
         <p className="text-black text-2xl font-bold mb-1">{product.price}</p>
         <p className="line-through text-gray-500 mb-3">{product.oldPrice}</p>
-        <p className="mb-2 text-sm text-gray-600">Category: {product.category}</p>
+        <p className="mb-2 text-sm text-gray-600">Category: {product.category1}</p>
 
         {/* Quantity Controls */}
         <div className="flex items-center mb-4">

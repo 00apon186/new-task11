@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
+
 
 import Header from '@/app/components/Header';
-import InfoFeatures from '@/app/components/InfoFeatures';
+
 import Footer from '@/app/components/Footer';
 import RelatedProducts from '@/app/components/RelatedProducts';
 
@@ -20,8 +20,9 @@ export default function ProductPage(props: { params: Promise<{ id: string }> }) 
   const id = parseInt(params.id);
   const product = allProducts.find((p) => p.id === id);
 
+  const [drawerOpen, setDrawerOpen] = useState(false); // ✅ moved above conditional return
+
   if (!product) return notFound();
-    const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -29,22 +30,21 @@ export default function ProductPage(props: { params: Promise<{ id: string }> }) 
 
       <main className="max-w-4xl mx-auto px-4 py-12 flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/2">
-         
+          {/* Optional: Add something here */}
         </div>
 
         <SingleProductDetails
-          product={product}
+          product={{ ...product, category1: product.category1 }} // ✅ Ensure 'category' exists
           onAddToCart={() => setDrawerOpen(true)}
         />
       </main>
 
       <RelatedProducts
-        allProducts={allProducts}
+        allProducts={allProducts.map((p) => ({ ...p, category: p.category1 }))} // ✅ Ensure all have category
         currentId={product.id}
-        currentCategory={product.category}
+        currentCategory={product.category1}
       />
 
-      <InfoFeatures />
       <Footer />
 
       <CartDrawer

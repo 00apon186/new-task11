@@ -12,7 +12,7 @@ type Product = {
   price: string;
   oldPrice: string;
   discount: string;
-  category: string;
+  category1: string;
   brand: string;
 };
 
@@ -29,7 +29,7 @@ const RelatedProducts = ({
   const [cart, setCart] = useState<Product[]>([]);
 
   const relatedProducts = allProducts.filter(
-    (p) => p.category === currentCategory && p.id !== currentId
+    (p) => p.category1 === currentCategory && p.id !== currentId
   );
 
   useEffect(() => {
