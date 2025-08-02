@@ -163,9 +163,10 @@ export default function Header({ onSearchChange }: Props) {
             onMouseEnter={showDropdown}
             onMouseLeave={hideDropdown}
           >
-            <div className="flex items-center gap-1 cursor-pointer" onClick={toggleDropdown}>
-              Categories <BsChevronDown size={12} />
-            </div>
+           <div className="flex items-center gap-1 cursor-pointer" onClick={toggleDropdown}>
+  Categories {dropdownVisible ? <BsChevronDown className="rotate-180 transition-transform" size={12} /> : <BsChevronDown size={12} />}
+</div>
+
 
             {dropdownVisible && (
               <div className="absolute top-6 left-0 bg-white shadow-lg rounded w-64 max-h-[400px] overflow-y-auto z-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">

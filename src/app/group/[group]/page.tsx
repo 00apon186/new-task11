@@ -13,6 +13,7 @@ import { allProducts, Product } from '@/app/data/products';
 import { slugify } from '@/app/utils/slugify';
 import ProductCardGrid from '@/app/components/ProductCardgrid';
 import Footer from '@/app/components/Footer';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
 export default function GroupPage() {
   const { group } = useParams();
@@ -78,17 +79,21 @@ export default function GroupPage() {
       {/* Minimal FILTERS button for mobile */}
 <div className="flex-1 pb-6 md:pb-[80px]">
 
-        <button
-          className="flex items-center gap-1 text-black font-semibold uppercase tracking-wide lg:hidden"
-          onClick={() => setShowMobileFilters((prev) => !prev)}
-        >
-          <span>FILTERS</span>
-          <span className="text-sm">{showMobileFilters ? '▲' : '▼'}</span>
-        </button>
+       <button
+  className="flex items-center gap-1 text-black font-semibold uppercase tracking-wide lg:hidden"
+  onClick={() => setShowMobileFilters((prev) => !prev)}
+>
+  <span className='ml-2'>FILTERS</span>
+  {showMobileFilters ? (
+    <FiChevronUp size={16} className="align-middle" />
+  ) : (
+    <FiChevronDown size={16} className="align-middle" />
+  )}
+</button>
 
         {showMobileFilters && (
           <div className="bg-pink-50 border rounded mt-2 p-4">
-            <h3 className="text-sm font-bold mb-2 text-black">Filter by Sub-Category</h3>
+            <h3 className="text-sm font-base mb-2 text-black">Filter by Sub-Category</h3>
 <div className="space-y-3 max-h-[180px] overflow-y-auto pr-1">
   {allCategories.map((cat) => (
     <label
