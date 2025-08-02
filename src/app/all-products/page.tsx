@@ -162,11 +162,12 @@ export default function AllProductsPage() {
               >
                 <div className="flex items-center gap-2">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="category"
                     checked={checkedCategories.includes(cat)}
                     onChange={() => handleCategoryChange(cat)}
-                    className="accent-rose-500"
+                    
+                className="w-4 h-4 border border-gray-400 rounded bg-white checked:bg-black accent-black"
                   />
                   {cat}
                 </div>

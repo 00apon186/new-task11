@@ -34,6 +34,7 @@ type Props = {
 export default function Header({ onSearchChange }: Props) {
   const [mobileCategoryOpen, setMobileCategoryOpen] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [dropdownFrozen, setDropdownFrozen] = useState(false);
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -45,25 +46,22 @@ export default function Header({ onSearchChange }: Props) {
   const isCategoryPage = pathname.startsWith('/category/');
   const formatCategoryUrl = (name: string) => `/category/${slugify(name)}`;
 
- useEffect(() => {
-  const handleDropdownVisibility = () => {
-    if (isCategoryPage) {
-      const isTrulyLargeScreen = window.innerWidth >= 1280; // Tailwind `xl`
-      setDropdownVisible(isTrulyLargeScreen);
-    } else {
-      setDropdownVisible(false);
-    }
-  };
+  useEffect(() => {
+    const handleDropdownVisibility = () => {
+      if (isCategoryPage) {
+        const isTrulyLargeScreen = window.innerWidth >= 1280;
+        setDropdownVisible(isTrulyLargeScreen);
+        setDropdownFrozen(isTrulyLargeScreen);
+      } else {
+        setDropdownVisible(false);
+        setDropdownFrozen(false);
+      }
+    };
 
-  // Run after render
-  setTimeout(handleDropdownVisibility, 0);
-
-  // Update on resize
-  window.addEventListener('resize', handleDropdownVisibility);
-  return () => window.removeEventListener('resize', handleDropdownVisibility);
-}, [isCategoryPage]);
-
-
+    setTimeout(handleDropdownVisibility, 0);
+    window.addEventListener('resize', handleDropdownVisibility);
+    return () => window.removeEventListener('resize', handleDropdownVisibility);
+  }, [isCategoryPage]);
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -77,22 +75,37 @@ export default function Header({ onSearchChange }: Props) {
     return () => window.removeEventListener('storage', updateCartCount);
   }, []);
 
-  const toggleDropdown = () => {
-    if (!isCategoryPage) {
-      setDropdownVisible((prev) => !prev);
+  // ✅ Hover show (if not frozen)
+  const showDropdown = () => {
+    if (!dropdownFrozen && !dropdownVisible) {
+      setDropdownVisible(true);
     }
   };
 
-  const showDropdown = () => setDropdownVisible(true);
+  // ✅ Hover leave (if not frozen)
   const hideDropdown = () => {
-    if (!isCategoryPage) setDropdownVisible(false);
+    if (!isCategoryPage && !dropdownFrozen && dropdownVisible) {
+      setDropdownVisible(false);
+    }
+  };
+
+  // ✅ Click toggle with freeze/unfreeze
+  const toggleDropdown = () => {
+    if (!isCategoryPage) {
+      setDropdownVisible((prevVisible) => {
+        const nextState = !prevVisible;
+        setDropdownFrozen(nextState); // freeze when opened, unfreeze when closed
+        return nextState;
+      });
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = e.target.value;
-  setSearchQuery(value);
-  onSearchChange?.(value); // ✅ safe call
-};
+    const value = e.target.value;
+    setSearchQuery(value);
+    onSearchChange?.(value);
+  };
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = searchQuery.trim();
@@ -105,10 +118,9 @@ export default function Header({ onSearchChange }: Props) {
     <header className="bg-white border-b border-gray-200 text-sm">
       <div className="px-4 py-2 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
         {/* Logo */}
-      <Link href="/" className="text-xl md:text-[28px] font-extrabold tracking-wide text-black">
-  SHEIN
-</Link>
-
+        <Link href="/" className="text-xl md:text-[28px] font-extrabold tracking-wide text-black">
+          SHEIN
+        </Link>
 
         {/* Search bar */}
         <form onSubmit={handleSearchSubmit} className="w-full md:max-w-[500px]">
@@ -163,10 +175,7 @@ export default function Header({ onSearchChange }: Props) {
                       key={i}
                       className="flex items-center justify-between px-4 py-2 text-[14px] text-black hover:bg-gray-100 cursor-pointer"
                     >
-                      <Link
-                        href={formatCategoryUrl(cat)}
-                        className="flex-1 hover:text-blue-600"
-                      >
+                      <Link href={formatCategoryUrl(cat)} className="flex-1 hover:text-blue-600">
                         {cat}
                       </Link>
                       <FaChevronRight className="text-gray-400 w-3 h-3 ml-2" />
@@ -226,10 +235,7 @@ export default function Header({ onSearchChange }: Props) {
           <ul className="grid grid-cols-2 gap-2 text-sm mt-1">
             {categories.map((cat, i) => (
               <li key={i}>
-                <Link
-                  href={formatCategoryUrl(cat)}
-                  className="hover:text-blue-600 block"
-                >
+                <Link href={formatCategoryUrl(cat)} className="hover:text-blue-600 block">
                   {cat}
                 </Link>
               </li>
@@ -238,7 +244,7 @@ export default function Header({ onSearchChange }: Props) {
         </div>
       )}
 
-      {/* ✅ Cart Drawer */}
+      {/* Cart Drawer */}
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );

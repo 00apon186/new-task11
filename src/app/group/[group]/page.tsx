@@ -137,15 +137,15 @@ export default function GroupPage() {
       className="flex justify-between items-center gap-2 text-sm text-black cursor-pointer group"
     >
       <div className="flex items-center gap-2">
-        <span className="w-[8px] h-[8px] bg-black rounded-full inline-block" /> {/* ✅ bullet */}
-        <input
-          type="checkbox"
-          checked={checkedCategories.includes(cat)}
-          onChange={() => handleCategoryChange(cat)}
-          className="hidden"
-        />
-        <span>{cat}</span>
-      </div>
+  <input
+    type="checkbox"
+    checked={checkedCategories.includes(cat)}
+    onChange={() => handleCategoryChange(cat)}
+    className="w-4 h-4 border border-gray-400 rounded bg-white checked:bg-black accent-black"
+  />
+  <span>{cat}</span>
+</div>
+
       <span className="text-gray-400 text-base group-hover:text-black">+</span> {/* ✅ right plus */}
     </label>
   ))}
